@@ -2,7 +2,7 @@ const EventEmitter = require('events');
 const emitter = new EventEmitter();
 
 //Registering a listener
-emitter.on('messageLogged', function(arg){
+emitter.on('messageLogged', (arg) => {
     console.log('Gotten message!', arg);
 });
 
