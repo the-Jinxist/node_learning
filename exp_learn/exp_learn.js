@@ -20,4 +20,7 @@ app.get('/api/courses',(request, response) => {
 // Usually in hosting applications we have this environment variable called PORT
 
 //We use the global process object for reading this PORT variable
-app.listen(3000, () => console.log('Listening on port 3000'));
+
+//This is the proper way to assign the port variable for your server
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Listening on port ${port}`));
