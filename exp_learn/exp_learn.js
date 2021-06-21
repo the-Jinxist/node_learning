@@ -3,7 +3,8 @@ const app = express();
 
 
 app.get(
-/* Endpoint/Path: Home page of the website */'/',
+/* Endpoint/Path: Home page of the website */
+'/',
 /* This call back is called when the endpoint is accessed */ 
 (request, response) => {
     
@@ -13,6 +14,10 @@ app.get(
 
 app.get('/api/courses',(request, response) => {
     response.send([1, 2, 3, 4, 5, 6]);
+});
+
+app.get('/api/courses/:id', (request, response) => {
+    response.send(request.params.id);
 });
 
 // 3000 is an arbitrary number and since hosting site assign their own ports,
