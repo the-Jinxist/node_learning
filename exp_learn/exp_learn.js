@@ -67,7 +67,6 @@ app.post('/api/courses', (request, response) => {
     const schema = Joi.object({
         name: Joi
             .string()
-            .alphanum()
             .min(3)
             .required()
     });
@@ -76,7 +75,8 @@ app.post('/api/courses', (request, response) => {
         .validateAsync(request.body)
         .catch(error => {
             console.log(`Error happened: ${error}`);
-            response.status(400).send(error);
+            //This only shows the first error though, there might be more than one
+            response.status(400).send(error.details[0].message);
             
         })
         .then(value => {
