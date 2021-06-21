@@ -2,6 +2,22 @@ const express = require('express');
 const app = express();
 
 
+const courses = [
+    {
+        id: 1, 
+        name: 'Course1'
+    },
+    {
+        id: 2, 
+        name: 'Course2'
+    },
+    {
+        id: 3, 
+        name: 'Course3'
+    },
+
+];
+
 app.get(
 /* Endpoint/Path: Home page of the website */
 '/',
@@ -13,12 +29,32 @@ app.get(
 });
 
 app.get('/api/courses',(request, response) => {
-    response.send([1, 2, 3, 4, 5, 6]);
+    response.send(JSON.stringify(courses));
 });
 
-app.get('/api/courses/:id', (request, response) => {
-    response.send(request.params.id);
+//Getting path/route and query string variables
+
+app.get('/api/courses/:id/:stuff', (request, response) => {
+
+    //Path/Route variables are used for required values
+    // response.send(request.params);
+
+    //Query strings are used for optional values
+    response.send(request.query);
 });
+
+//Retrieving a particular course that matches the same id
+app.get('/api/courses/:id/', (request, response) => { 
+    const course = courses.find( (value) => value.id === parseInt(request.params.id));
+    if(!course){
+        //This means course is not null/doesn't exists and we should return a 404 yay!
+        response.status(404).send('The response with the given ID was not found');
+    }else{
+        response.send(course);
+    }
+    
+});
+
 
 // 3000 is an arbitrary number and since hosting site assign their own ports,
 //.. we can rely on 3000 to be available. So we have to use an environment variable
