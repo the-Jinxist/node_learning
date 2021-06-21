@@ -62,33 +62,38 @@ app.get('/api/courses/:id/', (request, response) => {
 //Responding to POST requests
 app.post('/api/courses', (request, response) => {
 
-    const schema = {
-        //This defines the schema for our input 
-        name: Joi.string().min(3).required()
-    }
+    //Used Joi for input validation, shit is quite a lifesaver, 
+    //.. Why don't we have something like this in mobile, cheeeee!
+    const schema = Joi.object({
+        name: Joi
+            .string()
+            .alphanum()
+            .min(3)
+            .required()
+    });
 
-    Joi.validate()
+    schema
+        .validateAsync(request.body)
+        .catch(error => {
+            console.log(`Error happened: ${error}`);
+            response.status(400).send(error);
+            
+        })
+        .then(value => {
 
-    //A bit of input validation
-    //We moved to the library called joi to take care of our input validation
-    if(request.body.name || request.body.name.length < 3){
-        // 400 Bad Request
-        response
-            .status(400)
-            .send('Name is required and should be minimum 3 characters');
+            console.log(`then block was called!`);
+
+            const course = {
+                id: courses.length + 1,
+                //In order for the line below to work, we need to enable parsing of the JSON objects in 
+                //..in the body of the request
+                name: request.body.name
+            };
         
-        return;
-    }
+            courses.push(course);
+            response.send(course);
 
-    const course = {
-        id: courses.length + 1,
-        //In order for the line below to work, we need to enable parsing of the JSON objects in 
-        //..in the body of the request
-        name: request.body.name
-    };
-
-    courses.push(course);
-    response.send(course);
+        });
 
 });
 
