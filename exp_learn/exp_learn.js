@@ -64,36 +64,23 @@ app.post('/api/courses', (request, response) => {
 
     //Used Joi for input validation, shit is quite a lifesaver, 
     //.. Why don't we have something like this in mobile, cheeeee!
-    const schema = Joi.object({
-        name: Joi
-            .string()
-            .min(3)
-            .required()
-    });
 
-    schema
-        .validateAsync(request.body)
-        .catch(error => {
-            console.log(`Error happened: ${error}`);
-            //This only shows the first error though, there might be more than one
-            response.status(400).send(error.details[0].message);
-            
-        })
-        .then(value => {
 
-            console.log(`then block was called!`);
+    const {error} = validateCourse(request.body);
+    if(error){
+        response.status(400).send(error.details[0].message);
+        return;   
+    }
 
-            const course = {
-                id: courses.length + 1,
-                //In order for the line below to work, we need to enable parsing of the JSON objects in 
-                //..in the body of the request
-                name: request.body.name
-            };
-        
-            courses.push(course);
-            response.send(course);
+    const course = {
+        id: courses.length + 1,
+        //In order for the line below to work, we need to enable parsing of the JSON objects in 
+        //..in the body of the request
+        name: request.body.name
+    };
 
-        });
+    courses.push(course);
+    response.send(course);
 
 });
 
@@ -115,6 +102,20 @@ app.put('/api/courses/:id', (request, response) => {
         return;
     }
 
+    //This object destructuring, getting the individual values from an object 
+    const {error} = validateCourse(request.body);
+    if(error){
+        response.status(400).send(error.details[0].message);  
+        return;
+    }
+
+    course.name = request.body.name;
+    response.send(course);
+
+
+});
+
+function validateCourse(request){
     const schema = Joi.object({
         name: Joi
             .string()
@@ -122,23 +123,8 @@ app.put('/api/courses/:id', (request, response) => {
             .required()
     });
 
-    schema
-        .validateAsync(request.body)
-        .catch(error => {
-            console.log(`Error happened: ${error}`);
-            //This only shows the first error though, there might be more than one
-            response.status(400).send(error.details[0].message);
-            
-        })
-        .then(value => {
-
-            course.name = request.body.name;
-            response.send(course);
-
-        });
-
-
-});
+    return schema.validate(request);
+}
 
 // 3000 is an arbitrary number and since hosting site assign their own ports,
 //.. we can rely on 3000 to be available. So we have to use an environment variable
