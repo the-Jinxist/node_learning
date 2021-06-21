@@ -51,7 +51,7 @@ app.get('/api/courses/:id/:stuff', (request, response) => {
 app.get('/api/courses/:id/', (request, response) => { 
     const course = courses.find( (value) => value.id === parseInt(request.params.id));
     if(!course){
-        //This means course is not null/doesn't exists and we should return a 404 yay!
+        //This means course is null/doesn't exists and we should return a 404 yay!
         response.status(404).send('The response with the given ID was not found');
     }else{
         response.send(course);
@@ -94,6 +94,49 @@ app.post('/api/courses', (request, response) => {
             response.send(course);
 
         });
+
+});
+
+//Handling PUT requests
+app.put('/api/courses/:id', (request, response) => {
+    //Look up the course with the given id
+    //If course doesn't exist, return 404
+
+    //Validate
+    //if invalid, return 400 - Bad Request
+
+    //Update course
+    //Return the update course to the client
+
+    const course = courses.find( (value) => value.id === parseInt(request.params.id));
+    if(!course){
+        //This means course is null/doesn't exist and we should return a 404 yay!
+        response.status(404).send('The response with the given ID was not found');
+        return;
+    }
+
+    const schema = Joi.object({
+        name: Joi
+            .string()
+            .min(3)
+            .required()
+    });
+
+    schema
+        .validateAsync(request.body)
+        .catch(error => {
+            console.log(`Error happened: ${error}`);
+            //This only shows the first error though, there might be more than one
+            response.status(400).send(error.details[0].message);
+            
+        })
+        .then(value => {
+
+            course.name = request.body.name;
+            response.send(course);
+
+        });
+
 
 });
 
