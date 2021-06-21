@@ -1,5 +1,5 @@
-const { response } = require('express');
 const express = require('express');
+const Joi = require('joi');
 const app = express();
 
 //This is a middleware code that allows express to properly parse
@@ -62,7 +62,15 @@ app.get('/api/courses/:id/', (request, response) => {
 //Responding to POST requests
 app.post('/api/courses', (request, response) => {
 
+    const schema = {
+        //This defines the schema for our input 
+        name: Joi.string().min(3).required()
+    }
+
+    Joi.validate()
+
     //A bit of input validation
+    //We moved to the library called joi to take care of our input validation
     if(request.body.name || request.body.name.length < 3){
         // 400 Bad Request
         response
