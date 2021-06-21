@@ -1,6 +1,10 @@
+const { response } = require('express');
 const express = require('express');
 const app = express();
 
+//This is a middleware code that allows express to properly parse
+//them JSON objects
+app.use(express.json());
 
 const courses = [
     {
@@ -55,6 +59,30 @@ app.get('/api/courses/:id/', (request, response) => {
     
 });
 
+//Responding to POST requests
+app.post('/api/courses', (request, response) => {
+
+    //A bit of input validation
+    if(request.body.name || request.body.name.length < 3){
+        // 400 Bad Request
+        response
+            .status(400)
+            .send('Name is required and should be minimum 3 characters');
+        
+        return;
+    }
+
+    const course = {
+        id: courses.length + 1,
+        //In order for the line below to work, we need to enable parsing of the JSON objects in 
+        //..in the body of the request
+        name: request.body.name
+    };
+
+    courses.push(course);
+    response.send(course);
+
+});
 
 // 3000 is an arbitrary number and since hosting site assign their own ports,
 //.. we can rely on 3000 to be available. So we have to use an environment variable
