@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 
 //Import routes
-const postRoutes = require('.routes/posts/posts.js')
+const postRoutes = require('./app_routes/posts');
 
 //Middlewares in Express: A function that execute when we hit a particular route
 app.use('/posts', postRoutes);
