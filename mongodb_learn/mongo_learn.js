@@ -1,25 +1,19 @@
 const express = require('express');
 const MongoClient = require('mongodb').MongoClient;
+require('dotenv/config');
 
-const app = express();
-
-//Omo, you must encode the special characters in your connection string 
-//..before you use it o. Encoded '#' as '%23'
-
-//Also remove the angle brackets from the password part, genius.
-
-const connectionString = 
-    'mongodb+srv://neo_dev:goodness11%23@neo-mongo.fhr3f.mongodb.net/neodb?retryWrites=true&w=majority'
+const app = express();    
 
 //Allows for easy parsing of request bodies.
 app.use(express.json());
 
-//Middlewares in Express: A function that execute when we hit a particular route
-app.use('/posts', () => {
-    console.log('This is a middle ware running');
-});
+//Import routes
+const postRoutes = require('.routes/posts/posts.js')
 
-MongoClient.connect(connectionString, {useUnifiedTopology: true}, (error, client) => {
+//Middlewares in Express: A function that execute when we hit a particular route
+app.use('/posts', postRoutes);
+
+MongoClient.connect(process.env.DB_CONNECTION, {useUnifiedTopology: true}, (error, client) => {
     if(error){
         console.log(`Error occurred while connecting to mongo db, ${error}`);
         return;
