@@ -1,0 +1,15 @@
+{
+  "name": "mongodb_learn",
+  "version": "1.0.0",
+  "description": "We're learning mongo db",
+  "main": "mongo_learn.js",
+  "scripts": {
+    "start": "nodemon mongo_learn.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7"
+  }
+}
