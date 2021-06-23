@@ -1,10 +1,11 @@
 const express = require('express');
+const PostsModel = require('../models/Post');
 
 //Using a router to cleanly separate app logic into separate files
 const router = express.Router();
 
 //Importing the model we want to post to
-const Post = require('../models/Post');
+require('../models/Post');
 
 //We can replace '/posts' with '/' because we have specified the route that will
 //..will be used in @mongo_learn.js
@@ -17,8 +18,24 @@ router.get('/specific', (request, response) => {
 });
 
 router.post('/', (request, response) => {
-    response.send(`Bro look at your stuff: ${request.body.title}`)
-    console.log(request.body);
+    
+    const post = new PostsModel({
+        title: request.body.title,
+        description: request.body.description
+    });
+
+    
+    post.save().then(data => {
+            response.json(data);
+        })
+        .catch( error => {
+            response
+                .status(401)
+                .json({
+                    message: error
+                });
+        });
+
 });
 
 module.exports = router;
