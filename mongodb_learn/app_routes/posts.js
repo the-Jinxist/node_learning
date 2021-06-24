@@ -52,6 +52,27 @@ router.delete('/:id', async (request, response) => {
     }
 });
 
+//Updating a particular document in de database
+router.patch('/:id', async (request, response) => {
+    try{
+        const updatedPost = 
+            await PostsModel.updateOne(
+                { _id: request.params.id}, 
+                { $set: {title: request.body.title}}
+            );
+
+        response.status(200).json({
+            message: "You have successfully updated this post",
+            post: updatedPost
+        });
+        
+    }catch(error){
+        response.status(400).json({
+            failure: error
+        });
+    }
+});
+
 router.post('/', async (request, response) => {
     
     const newModel = new PostsModel({

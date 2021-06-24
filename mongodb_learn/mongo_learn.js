@@ -4,10 +4,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv/config');
 
+//To allow domains to be able to access your APIs, we have to use the CORS middleware
+const cors = require('cors');
+
 const app = express();    
 
 //Allows for easy parsing of request bodies.
 app.use(express.json());
+app.use(cors());
 
 //Import routes
 const postRoutes = require('./app_routes/posts');
