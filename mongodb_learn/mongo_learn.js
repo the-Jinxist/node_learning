@@ -1,5 +1,7 @@
 const express = require('express');
-const MongoClient = require('mongodb').MongoClient;
+//Used mongoose itself to connect with the mongodb database and removed '&w=majority' from the end of the 
+//..db URI
+const mongoose = require('mongoose');
 require('dotenv/config');
 
 const app = express();    
@@ -15,18 +17,13 @@ app.use('/posts', postRoutes);
 
 //Favour, always remember to keep the .env file in the same folder with the file
 //..you're using it in
-MongoClient.connect(process.env.MONGO_URL, {useUnifiedTopology: true, useNewUrlParser: true}, (error, client) => {
-    if(error){
-        console.log(`Error occurred while connecting to mongo db, ${error}`);
-        return;
-    }
-
-    console.log('We are in the congo now boys!');
-
-    const db = client.db('neodb');
-    const neosCollection = db.collection('neoscollection')
-
-});
+mongoose.connect(process.env.MONGO_URL, {useUnifiedTopology: true, useNewUrlParser: true})
+    .then( value => {
+        console.log("We in the mongo boys!");
+    })
+    .catch(error => {
+        console.log(error);
+    });
 
 
 //We have to start listening to a server
