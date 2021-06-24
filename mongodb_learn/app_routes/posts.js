@@ -9,35 +9,54 @@ require('../models/Post');
 
 //We can replace '/posts' with '/' because we have specified the route that will
 //..will be used in @mongo_learn.js
-router.get('/', (request, response) => {
-    response.send('We are still on posts in a new route, sadly');
+
+//Returns all the posts in the database
+router.get('/',  async (request, response) => {
+    try{
+        const posts = await PostsModel.find();
+        response.status(200).json(posts);
+    }catch(error){
+        console.log(error);
+            response.status(400).json({
+                failure: error
+            });
+    }
 });
 
-router.get('/specific', (request, response) => {
-    response.send('Here is your specific post, ooh rah!');
+router.get('/:id', async (request, response) => {
+    try{
+        const post = await PostsModel.findById(request.params.id);
+        response.status(200).json(post);
+    }catch(error){
+        response.status(400).json({
+            failure: error
+        });
+    }
+    
 });
 
-router.post('/', (request, response) => {
+router.post('/', async (request, response) => {
     
     const newModel = new PostsModel({
         title: request.body.title,
         description: request.body.description,
     });
 
-    newModel
-        .save()
-        .then( data => {
-            console.log(data);
-            response.status(200).json({
-                success: data
-            });
-        })
-        .catch(error => {
-            console.log(error);
+    
+    try{
+        const savedModel = await newModel.save();
+        
+        console.log(savedModel);
+        response.status(200).json({
+            success: savedModel
+        });
+
+    }catch(error){
+        console.log(error);
             response.status(400).json({
                 failure: error
             });
-        });
+    }
 
 });
 
