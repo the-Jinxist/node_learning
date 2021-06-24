@@ -1,23 +1,5 @@
 const express = require('express');
-const mongoose = require('mongoose');
-
-//We'll be creating a schema. This represents how a post looks
-const PostSchema = mongoose.Schema({
-    title: {
-        type: String,
-        required: true
-    },
-    description: {
-        type: String,
-        required: true
-    },
-    other: {
-        type: String,
-        required: true
-    }
-});
-
-const NewPosts = mongoose.model('NewPosts', PostSchema);
+const PostsModel = require('../models/Post');
 
 //Using a router to cleanly separate app logic into separate files
 const router = express.Router();
@@ -37,10 +19,9 @@ router.get('/specific', (request, response) => {
 
 router.post('/', (request, response) => {
     
-    const newModel = new NewPosts({
+    const newModel = new PostsModel({
         title: request.body.title,
         description: request.body.description,
-        other: "Other stuff"
     });
 
     newModel
