@@ -23,6 +23,7 @@ router.get('/',  async (request, response) => {
     }
 });
 
+//Returns a specific post via the id in the params
 router.get('/:id', async (request, response) => {
     try{
         const post = await PostsModel.findById(request.params.id);
@@ -33,6 +34,22 @@ router.get('/:id', async (request, response) => {
         });
     }
     
+});
+
+//Deletes a specific post
+router.delete('/:id', async (request, response) => {
+    try{
+        //Used ' _id ' here because mongo db automatically generates the field for us
+        const removedPost = await PostsModel.remove({ _id: request.params.id });
+        response.status(200).json({
+            message: "You have successfully removed this post",
+            post: removedPost
+        });
+    }catch(error){
+        response.status(400).json({
+            failure: error
+        });
+    }
 });
 
 router.post('/', async (request, response) => {
