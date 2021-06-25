@@ -15,9 +15,11 @@ app.use(cors());
 
 //Import routes
 const postRoutes = require('./app_routes/posts');
+const authRoutes = require('./app_routes/auth');
 
 //Middlewares in Express: A function that execute when we hit a particular route
 app.use('/posts', postRoutes);
+app.use('/auth', authRoutes);
 
 //Favour, always remember to keep the .env file in the same folder with the file
 //..you're using it in
