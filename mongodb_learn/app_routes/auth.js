@@ -4,34 +4,15 @@ const router = express.Router();
 const User = require('../models/User');
 const Joi = require('joi');
 const { SchemaType } = require('mongoose');
+const { validateSignUpRequest, validateLoginRequest } = require('../models/validation');
 
-//validate the request
-function validate(request){
-    const schema = Joi.object({
-        name: Joi.string()
-                .required()
-                .min(3)
-                .max(255),
-        email: Joi.string()
-                    .required()
-                    .max(255)
-                    .min(6),
-        password: Joi.string()
-                     .required()
-                     .min(8)
-                     .max(1024)
-    });
-
-    return schema.validate(request);
-}
 
 router.post('/register', async (request, response) => {
    
     try{
 
-        //29:18
-
-    const validation = validate(request.body);
+    //Validating the data collected from the user
+    const validation = validateSignUpRequest(request.body);
     if(validation.error){
         console.log(validation.error.details);
         response.status(400).json({
@@ -40,6 +21,18 @@ router.post('/register', async (request, response) => {
         return;
     }
 
+    //Checking if the user is already in the database
+    const emailExists = User.findOne({email: request.body.email});
+    if(emailExists){
+        response.status(400).json({
+            status: 400,
+            message: `A user with the email ${request.body.email} already exists`
+        }); 
+
+        return;
+    }
+
+    //Creating a new user
     const user = new User({
         name: request.body.name,
         email: request.body.email,
@@ -59,6 +52,6 @@ router.post('/register', async (request, response) => {
             message: e.toString()
         });
     }
-})
+});
 
 module.exports = router;
