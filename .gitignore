@@ -1,2 +1,2 @@
-/mongodb_learn/.env
+/mongodb_learn/*.env
 /mongodb_learn/node_modules/

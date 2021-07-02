@@ -3,6 +3,8 @@ const express = require('express');
 const User = require('../models/User');
 const { validateSignUpRequest, validateLoginRequest } = require('../models/validation');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+require('dotenv/config');
 
 const router = express.Router();
 
@@ -80,18 +82,24 @@ router.post('/login', async (request, response) => {
         if(savedUser){
             const validPass = await bcrypt.compare(request.body.password, savedUser.password);
             if(validPass){
-                response.status(200).json({
+
+                //Create and assign a token
+                console.log(`Fancy secret toke: ${process.env.TOKEN_SECRET}`);
+                const token = jwt.sign({_id: savedUser._id}, process.env.TOKEN_SECRET);
+
+                response.header('auth-token', token).status(200).json({
                     status: 200,
                     message: "Log in Successful!",
                     data: {
                         id: savedUser.id,
-                        email: savedUser.email
+                        email: savedUser.email,
+                        token: token
                     }
                 });
 
                 return;
             }else{
-                
+
                 response.status(400).json({
                     message: 'Email or Password is incorrect'
                 });
