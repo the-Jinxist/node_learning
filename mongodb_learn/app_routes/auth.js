@@ -27,15 +27,15 @@ function validate(request){
 
 router.post('/register', async (request, response) => {
    
-    
-
     try{
+
+        //29:18
 
     const validation = validate(request.body);
     if(validation.error){
         console.log(validation.error.details);
         response.status(400).json({
-            message: validation.error.details
+            message: validation.error.details[0].message
         });
         return;
     }
@@ -47,10 +47,17 @@ router.post('/register', async (request, response) => {
     })
 
         const savedUser = await user.save();
-        response.send(savedUser.toString());
+        response.status(200).json({
+            status: 200,
+            message: "Sign Up Successful!",
+            data: savedUser
+        });
     }catch(e){
         console.log(e.toString());
-        response.status(400).send(e);
+        response.status(400).json({
+            status: 400,
+            message: e.toString()
+        });
     }
 })
 
