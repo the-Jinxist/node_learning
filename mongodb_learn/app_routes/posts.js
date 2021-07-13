@@ -1,5 +1,6 @@
 const express = require('express');
 const PostsModel = require('../models/Post');
+const verifyToken = require('../app_routes/verify_token');
 
 //Using a router to cleanly separate app logic into separate files
 const router = express.Router();
@@ -11,7 +12,7 @@ require('../models/Post');
 //..will be used in @mongo_learn.js
 
 //Returns all the posts in the database
-router.get('/',  async (request, response) => {
+router.get('/', verifyToken , async (request, response) => {
     try{
         const posts = await PostsModel.find();
         response.status(200).json(posts);
