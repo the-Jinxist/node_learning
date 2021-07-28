@@ -20,6 +20,7 @@ function validateSignUp(request){
 }
 
 function validateLogin(request){
+	//Checking..
     const schema = Joi.object({
         email: Joi.string()
                     .required()
